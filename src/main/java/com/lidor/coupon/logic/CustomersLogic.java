@@ -61,16 +61,18 @@ public class CustomersLogic {
     }
 
     private void validateCustomer(Customer customer) throws ServerException {
-       if(customer.getAddress() != null) {
-           if (customer.getAddress().length() < 1) {
-               throw new ServerException(ErrorType.INVALID_ADDRESS, customer.getAddress());
-           }
-           if (customer.getAddress().length() > 45) {
-               throw new ServerException(ErrorType.INVALID_ADDRESS, customer.getAddress());
-           }
-       }
-        if (customer.getPhoneNumber()!=null && !ValidatorUtils.isNumberValid(customer.getPhoneNumber())) {
-            throw new ServerException(ErrorType.INVALID_PHONE_NUMBER, customer.getPhoneNumber());
+        if (customer.getAddress() != null) {
+            if (customer.getAddress().length() < 1) {
+                throw new ServerException(ErrorType.INVALID_ADDRESS, customer.getAddress());
+            }
+            if (customer.getAddress().length() > 45) {
+                throw new ServerException(ErrorType.INVALID_ADDRESS, customer.getAddress());
+            }
         }
+//        if (customer.getPhoneNumber() != null) {
+//            if (!ValidatorUtils.isNumberValid(customer.getPhoneNumber())) {
+//                throw new ServerException(ErrorType.INVALID_PHONE_NUMBER, customer.getPhoneNumber());
+//            }
+//        }
     }
 }

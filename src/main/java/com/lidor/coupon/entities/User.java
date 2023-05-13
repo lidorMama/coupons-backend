@@ -18,6 +18,7 @@ public class User {
     @Column(name = "PASSWORD", nullable = false)
     private String password;
 
+    @Enumerated (EnumType.STRING)
     @Column(name = "USER_TYPE", nullable = false)
     private UserType userType;
 
