@@ -29,7 +29,7 @@ public class CompaniesController {
     }
 
     @GetMapping("{companyId}")
-    public Company getCompany(@PathVariable("companyId") long id) throws ServerException {
+    public CompanyData getCompany(@PathVariable("companyId") long id) throws ServerException {
         return companiesLogic.getCompany(id);
     }
 

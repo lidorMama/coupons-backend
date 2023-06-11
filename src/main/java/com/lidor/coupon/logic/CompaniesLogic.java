@@ -37,9 +37,9 @@ public class CompaniesLogic {
         companiesDal.save(company);
     }
 
-    public Company getCompany(long companyId) throws ServerException {
+    public CompanyData getCompany(long companyId) throws ServerException {
         validCompanyExist(companyId);
-        Company company = companiesDal.findById(companyId).get();
+        CompanyData company = companiesDal.getCompany(companyId);
         return company;
     }
 

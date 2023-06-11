@@ -49,7 +49,7 @@ public class CouponsLogic {
 
     public CouponData getCoupon(long couponId) throws ServerException {
         couponExistById(couponId);
-        CouponData coupon = couponsDal.getCompany(couponId);
+        CouponData coupon = couponsDal.getCoupon(couponId);
         return coupon;
     }
 

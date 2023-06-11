@@ -18,7 +18,7 @@ public interface ICouponDal extends CrudRepository<Coupon, Long> {
     List<CouponData> findAll(Pageable pageable);
 
     @Query("SELECT NEW com.lidor.coupon.dto.CouponData(cp.id, cp.name,cp.price, cp.description, cp.startDate, cp.endDate, cp.category.name, cp.company.name) FROM Coupon cp Join Company cm ON cp.company.id = cm.id JOIN Category ct On cp.category.id = ct.id WHERE cp.id= :couponId")
-    CouponData getCompany(@Param("couponId") long couponId);
+    CouponData getCoupon(@Param("couponId") long couponId);
 
     @Query("SELECT NEW com.lidor.coupon.dto.CouponData(cp.id, cp.name,cp.price, cp.description, cp.startDate, cp.endDate, cp.category.name, cp.company.name) FROM Coupon cp Join Company cm ON cp.company.id = cm.id JOIN Category ct On cp.category.id = ct.id WHERE cp.company.id= :companyId")
     List<CouponData> findAllByCompanyId(@Param("companyId") long companyId, Pageable pageable);
