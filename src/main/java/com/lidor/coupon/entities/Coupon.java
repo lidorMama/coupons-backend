@@ -30,6 +30,9 @@ public class Coupon {
     @Column(name = "AMOUNT", nullable = false)
     private int amount;
 
+    @Column(name = "IMG_URL", nullable = true)
+    private String imgURL;
+
     @ManyToOne
     @JoinColumn(name = "CATEGORY_ID", nullable = false)
     private Category category;
@@ -45,7 +48,7 @@ public class Coupon {
     public Coupon() {
     }
 
-    public Coupon(Long id, String name, String description, float price, Date startDate, Date endDate, int amount, Category category, Company company) {
+    public Coupon(Long id, String name, String description, float price, Date startDate, Date endDate, int amount,String imgURL,Category category, Company company) {
         this.id = id;
         this.name = name;
         this.description = description;
@@ -53,6 +56,7 @@ public class Coupon {
         this.startDate = startDate;
         this.endDate = endDate;
         this.amount = amount;
+        this.imgURL = imgURL;
         this.category = category;
         this.company = company;
     }
@@ -111,6 +115,14 @@ public class Coupon {
 
     public void setAmount(int amount) {
         this.amount = amount;
+    }
+
+    public String getImgURL() {
+        return imgURL;
+    }
+
+    public void setImgURL(String imgURL) {
+        this.imgURL = imgURL;
     }
 
     public Category getCategory() {

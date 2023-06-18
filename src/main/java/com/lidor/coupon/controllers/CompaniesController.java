@@ -19,8 +19,8 @@ public class CompaniesController {
     }
 
     @PostMapping
-    public long createCompany(@RequestBody Company company) throws ServerException {
-        return companiesLogic.createCompany(company);
+    public void createCompany(@RequestBody Company company) throws ServerException {
+         companiesLogic.createCompany(company);
     }
 
     @PutMapping

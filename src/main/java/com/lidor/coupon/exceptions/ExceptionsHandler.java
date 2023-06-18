@@ -1,33 +1,40 @@
 package com.lidor.coupon.exceptions;
+import javax.servlet.http.HttpServletResponse;
 
 import com.lidor.coupon.dto.ServerErrorData;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
-import javax.servlet.http.HttpServletResponse;
-
+// Exception handler class
 @RestControllerAdvice
 public class ExceptionsHandler {
+
     @ExceptionHandler
     @ResponseBody
-    public ServerErrorData response(Exception exception, HttpServletResponse httpServletResponse) {
+    public ServerErrorData customerExceptionResponse(HttpServletResponse httpServletResponse, Exception e) {
 
-        if (exception instanceof ServerException) {
+        if(e instanceof ServerException) {
 
-            ServerException serverException = (ServerException) exception;
+            ServerException serverException = (ServerException) e;
+
             int errorCode = serverException.getErrorType().getErrorNumber();
             String errorMessage = serverException.getErrorType().getErrorMessage();
-            String errorType = String.valueOf(serverException.getErrorType());
-
+            String errorName = String.valueOf(serverException.getErrorType());
             httpServletResponse.setStatus(errorCode);
 
-            if (serverException.getErrorType().isShowStackTrace()) {
+            if(serverException.getErrorType().isShowStackTrace()) {
                 serverException.printStackTrace();
             }
-            return new ServerErrorData(errorType, errorMessage);
+
+            ServerErrorData serverErrorData = new ServerErrorData(errorCode, errorName ,errorMessage);
+            return serverErrorData;
         }
+
         httpServletResponse.setStatus(601);
-        return new ServerErrorData("General Error", "Something went wrong , try again later");
-}
+        ServerErrorData serverErrorData = new ServerErrorData(601,
+                "Something went wrong, please try again later", "GENERAL_ERROR");
+
+        return serverErrorData;
+    }
 }

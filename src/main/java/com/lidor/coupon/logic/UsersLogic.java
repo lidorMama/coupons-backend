@@ -9,6 +9,7 @@ import com.lidor.coupon.dto.UserLoginData;
 import com.lidor.coupon.entities.User;
 import com.lidor.coupon.enums.ErrorType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.HashUtils;
 import com.lidor.coupon.util.JWTUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,46 +35,76 @@ public class UsersLogic {
     public void createUser(User user) throws ServerException {
         userValidation(user);
         userExistByName(user.getUserName());
-        usersDal.save(user);
+        try {
+            usersDal.save(user);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create user" + user.getUserName());
+        }
     }
 
     public void updateUser(User user) throws ServerException {
         validUserExistById(user.getId());
         userValidation(user);
-        usersDal.save(user);
+        try {
+            usersDal.save(user);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update user" + user.getUserName());
+        }
     }
 
     public UserData getUser(long userId) throws ServerException {
         validUserExistById(userId);
-        UserData user = usersDal.findUser(userId);
-        return user;
+        try {
+            UserData user = usersDal.findUser(userId);
+            return user;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create user" + userId);
+        }
     }
 
     public void removeUser(long userId) throws ServerException {
         validUserExistById(userId);
-        usersDal.deleteById(userId);
+        try {
+            usersDal.deleteById(userId);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to remove user" + userId);
+        }
     }
 
     public List<UserData> getAllUsers(int pageNumber) throws ServerException {
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<UserData> users = usersDal.findAll(pageable);
-        return users;
+        try {
+            List<UserData> users = usersDal.findAll(pageable);
+            return users;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all users");
+        }
     }
 
     public List<UserData> getAllCompanyUsers(long companyId, int pageNumber) throws ServerException {
         companiesLogic.validCompanyExist(companyId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<UserData> companyUsers = usersDal.findAllByCompany(companyId, pageable);
-        return companyUsers;
+        try {
+            List<UserData> companyUsers = usersDal.findAllByCompany(companyId, pageable);
+            return companyUsers;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all company users");
+        }
     }
 
     public String login(UserLoginData userLoginData) throws ServerException, JsonProcessingException {
+        String hexString = HashUtils.computeSHA256Hash(userLoginData.getPassword());
+        userLoginData.setPassword(hexString);
         SuccessfulLoginData user = usersDal.login(userLoginData.getUserName(), userLoginData.getPassword());
         if (user == null) {
             throw new ServerException(ErrorType.LOGIN_FAILURE, "The user name and password are not matched, Username: " + userLoginData.getUserName() + " ,Password: " + userLoginData.getPassword());
         }
-        String token = JWTUtils.createJWT(user);
-        return token;
+        try {
+            String token = JWTUtils.createJWT(user);
+            return token;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "failed to create a token");
+        }
     }
 
     void userExistByName(String userName) throws ServerException {

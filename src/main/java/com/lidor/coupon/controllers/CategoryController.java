@@ -20,8 +20,8 @@ public class CategoryController {
     }
 
     @PostMapping
-    public long createCategory(@RequestBody Category category) throws ServerException {
-        return categoriesLogic.createCategory(category);
+    public void createCategory(@RequestBody Category category) throws ServerException {
+        categoriesLogic.createCategory(category);
     }
 
     @PutMapping

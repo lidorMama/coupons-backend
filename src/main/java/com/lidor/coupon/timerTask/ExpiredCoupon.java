@@ -15,13 +15,13 @@ public class ExpiredCoupon extends TimerTask {
     }
 
     @Override
-    public void run() throws RuntimeException {
+    public void run()  {
         long now = Calendar.getInstance().getTimeInMillis();
         Date todayDate = new Date(now);
         try {
             couponsLogic.removeExpiredCoupons(todayDate);
-        } finally {
-            System.out.println("Job done");
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 }

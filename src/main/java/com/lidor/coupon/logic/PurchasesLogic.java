@@ -36,43 +36,71 @@ public class PurchasesLogic {
         long couponId = purchase.getCoupon().getId();
         int amountOfCoupons = purchase.getAmount();
         couponsLogic.updateCouponAmountAfterPurchase(couponId, amountOfCoupons);
-        purchasesDal.save(purchase);
+        try {
+            purchasesDal.save(purchase);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to buy coupon" + purchase.toString());
+        }
     }
 
-    public void updatePurchase(Purchase purchase) throws ServerException{
+    public void updatePurchase(Purchase purchase) throws ServerException {
         purchaseValidation(purchase);
-        purchasesDal.save(purchase);
+        try {
+            purchasesDal.save(purchase);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update purchase" + purchase.toString());
+        }
     }
 
     public PurchaseData getPurchase(long purchaseId) throws ServerException {
         purchaseExistById(purchaseId);
-        PurchaseData purchaseCoupon = purchasesDal.findPurchase(purchaseId);
-        return purchaseCoupon;
+        try {
+            PurchaseData purchaseCoupon = purchasesDal.findPurchase(purchaseId);
+            return purchaseCoupon;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update purchase" + purchaseId);
+        }
     }
 
     public void removePurchase(long purchaseId) throws ServerException {
         purchaseExistById(purchaseId);
-        purchasesDal.deleteById(purchaseId);
+        try {
+            purchasesDal.deleteById(purchaseId);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to remove purchase" + purchaseId);
+        }
     }
 
     public List<PurchaseData> getPurchases(int pageNumber) throws ServerException {
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<PurchaseData> purchases = purchasesDal.findPurchases(pageable);
-        return purchases;
+        try {
+            List<PurchaseData> purchases= purchasesDal.findPurchases(pageable);
+            return purchases;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases");
+        }
     }
 
     public List<PurchaseData> getAllPurchasesByCouponId(long couponId, int pageNumber) throws ServerException {
         couponValid(couponId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<PurchaseData> couponPurchases = purchasesDal.findAllByCouponId(couponId, pageable);
-        return couponPurchases;
+        try {
+            List<PurchaseData> couponPurchases= purchasesDal.findAllByCouponId(couponId, pageable);
+            return couponPurchases;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by coupon id" +couponId);
+        }
     }
 
     public List<PurchaseData> getAllPurchasesByCustomerId(long customerId, int pageNumber) throws ServerException {
         userValid(customerId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<PurchaseData> userPurchases = purchasesDal.findAllByCustomerId(customerId, pageable);
-        return userPurchases;
+        try {
+            List<PurchaseData> userPurchases= purchasesDal.findAllByCustomerId(customerId, pageable);
+            return userPurchases;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by customer id"+ customerId);
+        }
     }
 
     private void purchaseValidation(Purchase purchase) throws ServerException {

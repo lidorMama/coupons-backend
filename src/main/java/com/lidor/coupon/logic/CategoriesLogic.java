@@ -9,44 +9,64 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class CategoriesLogic {
 
     private ICategoryDal categoriesDal;
 
- @Autowired
+    @Autowired
     public CategoriesLogic(ICategoryDal categoriesDal) {
         this.categoriesDal = categoriesDal;
     }
 
-    public long createCategory(Category category) throws ServerException {
+    public void createCategory(Category category) throws ServerException {
         categoryValidation(category);
         categoryNameExist(category);
-        categoriesDal.save(category);
-        long id = category.getId();
-        return id;
+        try {
+            categoriesDal.save(category);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create category " + category.getName());
+        }
     }
 
     public void updateCategory(Category category) throws ServerException {
         categoryExist(category.getId());
         categoryValidation(category);
-        categoriesDal.save(category);
+        try {
+            categoriesDal.save(category);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update category " + category.getName());
+        }
     }
 
     public void removeCategory(long categoryId) throws ServerException {
         categoryExist(categoryId);
-        categoriesDal.deleteById(categoryId);
+        try {
+            categoriesDal.deleteById(categoryId);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to remove category " + categoryId);
+        }
     }
 
     public List<Category> getAllCategories() throws ServerException {
-        List<Category> categories = (List<Category>) categoriesDal.findAll();
-        return categories;
+        try {
+            List<Category> categories = (List<Category>) categoriesDal.findAll();
+            return categories;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all categories");
+        }
     }
 
     public Category getCategory(long categoryId) throws ServerException {
         categoryExist(categoryId);
-        Category category = categoriesDal.findById(categoryId).get();
-        return category;
+        try {
+            Category category = categoriesDal.findById(categoryId).get();
+            return category;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get category " + categoryId);
+        }
+
     }
 
     boolean categoryExist(long categoryId) throws ServerException {

@@ -29,29 +29,49 @@ public class CustomersLogic {
         validateCustomer(customer);
         usersLogic.userValidation(customer.getUser());
         usersLogic.userExistByName(customer.getUser().getUserName());
-        customersDal.save(customer);
+        try {
+            customersDal.save(customer);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to add customer" + customer.getUser().getUserName());
+        }
     }
 
     public CustomerData getCustomer(long customerId) throws ServerException {
         customerExistById(customerId);
-        CustomerData customer = customersDal.findCustomer(customerId);
-        return customer;
+        try {
+            CustomerData customer = customersDal.findCustomer(customerId);
+            return customer;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get customer" + customerId);
+        }
     }
 
     public void removeCustomer(long customerId) throws ServerException {
         customerExistById(customerId);
-        customersDal.deleteById(customerId);
+        try {
+            customersDal.deleteById(customerId);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to remove customer" + customerId);
+        }
     }
 
     public void updateCustomer(Customer customer) throws ServerException {
         validateCustomer(customer);
-        customersDal.save(customer);
+        try {
+            customersDal.save(customer);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update customer" + customer.getUser().getUserName());
+        }
     }
 
     public List<CustomerData> getCustomers(int pageNumber) throws ServerException {
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<CustomerData> customers = customersDal.findAll(pageable);
-        return customers;
+        try {
+            List<CustomerData> customers= customersDal.findAll(pageable);
+            return customers;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get customers");
+        }
     }
 
     private void customerExistById(Long customerId) throws ServerException {

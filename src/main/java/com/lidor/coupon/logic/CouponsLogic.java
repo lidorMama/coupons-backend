@@ -34,43 +34,73 @@ public class CouponsLogic {
     public void createCoupon(Coupon coupon) throws ServerException {
         couponValidation(coupon);
         couponExistByName(coupon.getName());
-        couponsDal.save(coupon);
+        try {
+            couponsDal.save(coupon);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create coupon " + coupon.getName());
+        }
     }
 
     public void updateCoupon(Coupon coupon) throws ServerException {
         couponValidation(coupon);
-        couponsDal.save(coupon);
+        try {
+            couponsDal.save(coupon);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update coupon " + coupon.getName());
+        }
     }
 
     public void removeCoupon(long couponId) throws ServerException {
         couponExistById(couponId);
-        couponsDal.deleteById(couponId);
+        try {
+            couponsDal.deleteById(couponId);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to remove coupon " + couponId);
+        }
     }
 
     public CouponData getCoupon(long couponId) throws ServerException {
         couponExistById(couponId);
-        CouponData coupon = couponsDal.getCoupon(couponId);
-        return coupon;
+        try {
+            CouponData coupon= couponsDal.getCoupon(couponId);
+            return coupon;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupon " + couponId);
+        }
+
     }
 
     public List<CouponData> getCoupons(int pageNumber) throws ServerException {
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<CouponData> coupons = couponsDal.findAll(pageable);
-        return coupons;
+        try {
+            List<CouponData> coupons= couponsDal.findAll(pageable);
+            return coupons;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all coupons");
+        }
+
     }
 
     public List<CouponData> getCouponsByCompanyID(long companyId, int pageNumber) throws ServerException {
         companyValid(companyId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<CouponData> companyCoupons = couponsDal.findAllByCompanyId(companyId, pageable);
-        return companyCoupons;
+        try {
+            List<CouponData> companyCoupons= couponsDal.findAllByCompanyId(companyId, pageable);
+            return companyCoupons;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupons by company id" + companyId);
+        }
     }
 
     public List<CouponData> getCouponsByCategoryID(long categoryId, int pageNumber) throws ServerException {
         categoryValid(categoryId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<CouponData> categoryCoupons = couponsDal.findAllByCategoryId(categoryId, pageable);
-        return categoryCoupons;
+        try {
+            List<CouponData> categoryCoupons= couponsDal.findAllByCategoryId(categoryId, pageable);
+            return categoryCoupons;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupons by category id" + categoryId);
+        }
     }
 
     public List<CouponData> getAllCouponsByPriceRange(int minPrice, int maxPrice, int pageNumber) throws ServerException {
@@ -78,8 +108,12 @@ public class CouponsLogic {
         if (maxPrice < minPrice) {
             throw new ServerException(ErrorType.INVALID_NUMBER, "," + maxPrice + "," + minPrice);
         }
-        List<CouponData> couponsByPrice = couponsDal.findAlByPriceRange(minPrice, maxPrice, pageable);
-        return couponsByPrice;
+        try {
+            List<CouponData> couponsByPrice= couponsDal.findAlByPriceRange(minPrice, maxPrice, pageable);
+            return couponsByPrice;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupons by price range");
+        }
     }
 
     void updateCouponAmountAfterPurchase(long couponId, int couponBuy) throws ServerException {
@@ -93,7 +127,11 @@ public class CouponsLogic {
             throw new ServerException(ErrorType.COUPON_OUT_OF_STOCK, "Coupon out of stock");
         }
         coupon.setAmount(amount);
-        couponsDal.save(coupon);
+        try {
+            couponsDal.save(coupon);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update coupons after purchase" + couponId);
+        }
     }
 
     void couponExistById(long couponId) throws ServerException {

@@ -13,45 +13,66 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+
 @Service
 public class CompaniesLogic {
     private ICompanyDal companiesDal;
 
-@Autowired
+    @Autowired
     public CompaniesLogic(ICompanyDal companiesDal) {
         this.companiesDal = companiesDal;
     }
 
-    public long createCompany(Company company) throws ServerException {
+    public void createCompany(Company company) throws ServerException {
         companyValidation(company);
         companyExistByName(company.getName());
-        companiesDal.save(company);
-        long id = company.getId();
-        return id;
+        try {
+            companiesDal.save(company);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create company " + company.getName());
+        }
 
     }
 
     public void updateCompany(Company company) throws ServerException {
         validCompanyExist(company.getId());
         companyValidation(company);
-        companiesDal.save(company);
+        try {
+            companiesDal.save(company);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update company " + company.getName());
+        }
     }
 
     public CompanyData getCompany(long companyId) throws ServerException {
         validCompanyExist(companyId);
-        CompanyData company = companiesDal.getCompany(companyId);
-        return company;
+        try {
+            CompanyData company = companiesDal.getCompany(companyId);
+            return company;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create company " + companyId);
+        }
+
     }
 
     public void removeCompany(long companyId) throws ServerException {
         validCompanyExist(companyId);
-        companiesDal.deleteById(companyId);
+        try {
+            companiesDal.deleteById(companyId);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to remove company " + companyId);
+        }
     }
 
     public List<CompanyData> getAllCompanies(int pageNumber) throws ServerException {
-        Pageable pageable = PageRequest.of(pageNumber -1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
-        List<CompanyData> companies = companiesDal.findAll(pageable);
-        return companies;
+        Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
+        try {
+            List<CompanyData> companies = companiesDal.findAll(pageable);
+            return companies;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all companies");
+        }
+
     }
 
     void validCompanyExist(long companyId) throws ServerException {
