@@ -35,6 +35,8 @@ public class UsersLogic {
     public void createUser(User user) throws ServerException {
         userValidation(user);
         userExistByName(user.getUserName());
+        String hexString = HashUtils.computeSHA256Hash(user.getPassword());
+        user.setPassword(hexString);
         try {
             usersDal.save(user);
         } catch (Exception e) {

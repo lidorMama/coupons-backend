@@ -1,6 +1,7 @@
 package com.lidor.coupon.controllers;
 
 
+import com.lidor.coupon.dto.CategoryDto;
 import com.lidor.coupon.entities.Category;
 import com.lidor.coupon.exceptions.ServerException;
 import com.lidor.coupon.logic.CategoriesLogic;
@@ -30,7 +31,7 @@ public class CategoryController {
     }
 
     @GetMapping("{categoryId}")
-    public Category getCategory(@PathVariable("categoryId") long categoryId) throws ServerException {
+    public CategoryDto getCategory(@PathVariable("categoryId") long categoryId) throws ServerException {
         return categoriesLogic.getCategory(categoryId);
     }
 
@@ -40,7 +41,7 @@ public class CategoryController {
     }
 
     @GetMapping
-    public List<Category> getAllCategories() throws ServerException {
+    public List<CategoryDto> getAllCategories() throws ServerException {
         return categoriesLogic.getAllCategories();
     }
 }

@@ -38,7 +38,7 @@ public class CustomerController {
     }
 
     @GetMapping("{customerId}")
-    public CustomerData getCustomer(@PathVariable("customerId") int customerId) throws ServerException {
+    public Customer getCustomer(@PathVariable("customerId") int customerId) throws ServerException {
         return customersLogic.getCustomer(customerId);
     }
 

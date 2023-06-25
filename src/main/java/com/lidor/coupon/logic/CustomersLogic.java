@@ -6,6 +6,7 @@ import com.lidor.coupon.dto.CustomerData;
 import com.lidor.coupon.entities.Customer;
 import com.lidor.coupon.enums.ErrorType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.HashUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -29,6 +30,8 @@ public class CustomersLogic {
         validateCustomer(customer);
         usersLogic.userValidation(customer.getUser());
         usersLogic.userExistByName(customer.getUser().getUserName());
+        String hexString = HashUtils.computeSHA256Hash(customer.getUser().getPassword());
+        customer.getUser().setPassword(hexString);
         try {
             customersDal.save(customer);
         } catch (Exception e) {
@@ -36,10 +39,10 @@ public class CustomersLogic {
         }
     }
 
-    public CustomerData getCustomer(long customerId) throws ServerException {
+    public Customer getCustomer(long customerId) throws ServerException {
         customerExistById(customerId);
         try {
-            CustomerData customer = customersDal.findCustomer(customerId);
+            Customer customer = customersDal.findById(customerId);
             return customer;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get customer" + customerId);

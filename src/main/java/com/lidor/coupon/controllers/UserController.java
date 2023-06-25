@@ -9,6 +9,8 @@ import com.lidor.coupon.logic.UsersLogic;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequestMapping("/user")
 public class UserController {
@@ -46,7 +48,7 @@ public class UserController {
     }
 
     @GetMapping({"/byPage"})
-    public Iterable<UserData> getAllUsers(@RequestParam("page") int pageNumber) throws ServerException {
+    public List<UserData> getAllUsers(@RequestParam("page") int pageNumber) throws ServerException {
         return usersLogic.getAllUsers(pageNumber);
     }
 

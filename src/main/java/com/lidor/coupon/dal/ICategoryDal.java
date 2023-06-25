@@ -14,10 +14,10 @@ import java.util.List;
 @Repository
 public interface ICategoryDal extends CrudRepository<Category,Long> {
 
-    @Query("SELECT NEW com.lidor.coupon.dto.CategoryDto(cg.id, cg.name,cg.address) FROM Category cg WHERE cg.id= :categoryId")
+    @Query("SELECT NEW com.lidor.coupon.dto.CategoryDto(cg.id, cg.name) FROM Category cg WHERE cg.id= :categoryId")
     CategoryDto getCategory(@Param("categoryId") long categoryId);
 
-    @Query("SELECT NEW com.lidor.coupon.dto.CategoryDTO (c.id, c.type) FROM CouponCategory c")
+    @Query("SELECT NEW com.lidor.coupon.dto.CategoryDto(c.id, c.name) FROM Category c")
     List<CategoryDto> findAllCategories();
 
     boolean existsByName(String name);

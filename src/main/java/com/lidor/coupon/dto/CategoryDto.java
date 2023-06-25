@@ -1,10 +1,11 @@
 package com.lidor.coupon.dto;
 
-import javax.persistence.Column;
-
 public class CategoryDto {
     private Long id;
     private String name;
+
+    public CategoryDto() {
+    }
 
     public CategoryDto(Long id, String name) {
         this.id = id;

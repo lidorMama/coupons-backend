@@ -22,8 +22,8 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public void createPurchase(@RequestBody Purchase purchase) throws ServerException {
-        purchaseLogic.buyCoupon(purchase);
+    public void createPurchase(@RequestHeader String authorization,@RequestBody Purchase purchase) throws ServerException {
+        purchaseLogic.buyCoupon(authorization, purchase);
     }
 
     @PutMapping

@@ -1,27 +1,33 @@
 package com.lidor.coupon.timerTask;
 
-import com.lidor.coupon.exceptions.ServerException;
 import com.lidor.coupon.logic.CouponsLogic;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
-import java.sql.Date;
+import java.time.LocalDate;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.TimerTask;
 
+
+@Component
 public class ExpiredCoupon extends TimerTask {
     private CouponsLogic couponsLogic;
 
-    public ExpiredCoupon() {
+    @Autowired
+    public ExpiredCoupon(CouponsLogic couponsLogic) {
         this.couponsLogic = new CouponsLogic();
     }
 
     @Override
     public void run()  {
-        long now = Calendar.getInstance().getTimeInMillis();
-        Date todayDate = new Date(now);
+        Calendar c = Calendar.getInstance();
+        Date date = c.getTime();
         try {
-            couponsLogic.removeExpiredCoupons(todayDate);
+            couponsLogic.removeExpiredCoupons(date);
         } catch (Exception e) {
             e.printStackTrace();
         }
+
     }
 }

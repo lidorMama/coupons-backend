@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.lidor.coupon.Consts.Constants;
 import com.lidor.coupon.dto.SuccessfulLoginData;
+import com.lidor.coupon.exceptions.ServerException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtBuilder;
 import io.jsonwebtoken.Jwts;
@@ -70,7 +71,7 @@ public class JWTUtils {
         return Integer.parseInt(claims.getId());
     }
 
-    public static Integer validateToken(String token) throws Exception {
+    public static Integer validateToken(String token) throws ServerException {
         Claims claims = decodeJWT(token);
         return Integer.parseInt(claims.getId());
     }

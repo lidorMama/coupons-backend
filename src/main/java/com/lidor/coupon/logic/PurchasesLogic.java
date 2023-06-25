@@ -2,10 +2,13 @@ package com.lidor.coupon.logic;
 
 import com.lidor.coupon.Consts.Constants;
 import com.lidor.coupon.dal.IPurchaseDal;
+import com.lidor.coupon.dto.CustomerData;
 import com.lidor.coupon.dto.PurchaseData;
+import com.lidor.coupon.entities.Customer;
 import com.lidor.coupon.entities.Purchase;
 import com.lidor.coupon.enums.ErrorType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.JWTUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -21,6 +24,7 @@ public class PurchasesLogic {
     private UsersLogic usersLogic;
     private CategoriesLogic categoriesLogic;
     private CouponsLogic couponsLogic;
+    private  CustomersLogic customersLogic;
 
     @Autowired
     public PurchasesLogic(IPurchaseDal purchasesDal, UsersLogic usersLogic, CategoriesLogic categoriesLogic, CouponsLogic couponsLogic) {
@@ -30,9 +34,12 @@ public class PurchasesLogic {
         this.couponsLogic = couponsLogic;
     }
 
-    public void buyCoupon(Purchase purchase) throws ServerException {
+    public void buyCoupon(String authorization, Purchase purchase) throws ServerException {
         purchaseValidation(purchase);
         couponValid(purchase.getCoupon().getId());
+        long customerId = JWTUtils.validateToken(authorization);
+        Customer customer = customersLogic.getCustomer(customerId);
+        purchase.setCustomer(customer);
         long couponId = purchase.getCoupon().getId();
         int amountOfCoupons = purchase.getAmount();
         couponsLogic.updateCouponAmountAfterPurchase(couponId, amountOfCoupons);

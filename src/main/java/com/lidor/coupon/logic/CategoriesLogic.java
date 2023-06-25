@@ -1,6 +1,7 @@
 package com.lidor.coupon.logic;
 
 import com.lidor.coupon.dal.ICategoryDal;
+import com.lidor.coupon.dto.CategoryDto;
 import com.lidor.coupon.entities.Category;
 import com.lidor.coupon.enums.ErrorType;
 import com.lidor.coupon.exceptions.ServerException;
@@ -49,19 +50,19 @@ public class CategoriesLogic {
         }
     }
 
-    public List<Category> getAllCategories() throws ServerException {
+    public List<CategoryDto> getAllCategories() throws ServerException {
         try {
-            List<Category> categories = (List<Category>) categoriesDal.findAll();
+            List<CategoryDto> categories =categoriesDal.findAllCategories();
             return categories;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all categories");
         }
     }
 
-    public Category getCategory(long categoryId) throws ServerException {
+    public CategoryDto getCategory(long categoryId) throws ServerException {
         categoryExist(categoryId);
         try {
-            Category category = categoriesDal.findById(categoryId).get();
+            CategoryDto category = categoriesDal.getCategory(categoryId);
             return category;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get category " + categoryId);
