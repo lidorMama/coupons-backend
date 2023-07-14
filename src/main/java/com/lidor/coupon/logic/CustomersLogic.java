@@ -39,10 +39,10 @@ public class CustomersLogic {
         }
     }
 
-    public Customer getCustomer(long customerId) throws ServerException {
+    public CustomerData getCustomer(long customerId) throws ServerException {
         customerExistById(customerId);
         try {
-            Customer customer = customersDal.findById(customerId);
+            CustomerData customer = customersDal.getCustomer(customerId);
             return customer;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get customer" + customerId);

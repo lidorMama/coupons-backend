@@ -1,9 +1,8 @@
 package com.lidor.coupon.dal;
 
 import com.lidor.coupon.dto.CategoryDto;
-import com.lidor.coupon.dto.CompanyData;
+
 import com.lidor.coupon.entities.Category;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;
 import org.springframework.data.repository.query.Param;

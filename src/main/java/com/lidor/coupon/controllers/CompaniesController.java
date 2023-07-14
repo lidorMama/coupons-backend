@@ -38,9 +38,9 @@ public class CompaniesController {
         companiesLogic.removeCompany(id);
     }
 
-    @GetMapping
-    public List<CompanyData> getAllCompanies(@RequestParam("page") int pageNumber) throws ServerException {
-        return companiesLogic.getAllCompanies(pageNumber);
+    @GetMapping()
+    public List<CompanyData> getAllCompanies() throws ServerException {
+        return companiesLogic.getAllCompanies();
     }
 
 }

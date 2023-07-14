@@ -10,13 +10,14 @@ public class CouponData {
     private Date startDate;
     private Date endDate;
     private String imgURL;
+    private int amount;
     private String categoryName;
     private String companyName;
 
     public CouponData() {
     }
 
-    public CouponData(Long id, String name, Float price, String description, Date startDate, Date endDate,String imgURL, String categoryName, String companyName) {
+    public CouponData(Long id, String name, Float price, String description, Date startDate, Date endDate, String imgURL, int amount, String categoryName, String companyName) {
         this.id = id;
         this.name = name;
         this.price = price;
@@ -24,6 +25,7 @@ public class CouponData {
         this.startDate = startDate;
         this.endDate = endDate;
         this.imgURL = imgURL;
+        this.amount = amount;
         this.categoryName = categoryName;
         this.companyName = companyName;
     }
@@ -82,6 +84,14 @@ public class CouponData {
 
     public void setImgURL(String imgURL) {
         this.imgURL = imgURL;
+    }
+
+    public int getAmount() {
+        return amount;
+    }
+
+    public void setAmount(int amount) {
+        this.amount = amount;
     }
 
     public String getCategoryName() {

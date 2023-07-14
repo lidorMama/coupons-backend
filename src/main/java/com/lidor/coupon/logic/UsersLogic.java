@@ -95,8 +95,8 @@ public class UsersLogic {
     }
 
     public String login(UserLoginData userLoginData) throws ServerException, JsonProcessingException {
-        String hexString = HashUtils.computeSHA256Hash(userLoginData.getPassword());
-        userLoginData.setPassword(hexString);
+//        String hexString = HashUtils.computeSHA256Hash(userLoginData.getPassword());
+//        userLoginData.setPassword(hexString);
         SuccessfulLoginData user = usersDal.login(userLoginData.getUserName(), userLoginData.getPassword());
         if (user == null) {
             throw new ServerException(ErrorType.LOGIN_FAILURE, "The user name and password are not matched, Username: " + userLoginData.getUserName() + " ,Password: " + userLoginData.getPassword());

@@ -30,7 +30,7 @@ public class Coupon {
     @Column(name = "AMOUNT", nullable = false)
     private int amount;
 
-    @Column(name = "IMG_URL", nullable = true)
+    @Column(name = "IMG_URL", nullable = false)
     private String imgURL;
 
     @ManyToOne

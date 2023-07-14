@@ -64,10 +64,9 @@ public class CompaniesLogic {
         }
     }
 
-    public List<CompanyData> getAllCompanies(int pageNumber) throws ServerException {
-        Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
+    public List<CompanyData> getAllCompanies() throws ServerException {
         try {
-            List<CompanyData> companies = companiesDal.findAll(pageable);
+            List<CompanyData> companies = companiesDal.getAllCompanies();
             return companies;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all companies");

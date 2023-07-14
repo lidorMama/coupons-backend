@@ -15,6 +15,7 @@ public interface ICustomerDal extends CrudRepository<Customer, Long> {
     @Query("SELECT NEW com.lidor.coupon.dto.CustomerData(cs.user.id, cs.user.userName, cs.firstName, cs.lastName, cs.address, cs.amountOfKids, cs.phoneNumber) FROM Customer cs Join User us ON cs.id = us.id")
     List<CustomerData> findAll(Pageable pageable);
 
-    Customer findById(@Param("customerId") long customerId);
+    @Query("SELECT NEW com.lidor.coupon.dto.CustomerData(cs.user.id, cs.user.userName, cs.firstName, cs.lastName, cs.address, cs.amountOfKids, cs.phoneNumber) FROM Customer cs Join User us ON cs.id = us.id")
+    CustomerData getCustomer(@Param("customerId") long customerId);
 
 }

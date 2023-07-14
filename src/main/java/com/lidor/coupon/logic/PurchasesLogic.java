@@ -38,8 +38,7 @@ public class PurchasesLogic {
         purchaseValidation(purchase);
         couponValid(purchase.getCoupon().getId());
         long customerId = JWTUtils.validateToken(authorization);
-        Customer customer = customersLogic.getCustomer(customerId);
-        purchase.setCustomer(customer);
+        purchase.getCustomer().setId(customerId);
         long couponId = purchase.getCoupon().getId();
         int amountOfCoupons = purchase.getAmount();
         couponsLogic.updateCouponAmountAfterPurchase(couponId, amountOfCoupons);

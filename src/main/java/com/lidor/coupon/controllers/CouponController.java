@@ -40,11 +40,13 @@ public class CouponController {
         return couponsLogic.getCoupon(couponId);
     }
 
+    //http://localhost:8080/coupon/byCompanyId?companyId=1&pageNumber=1
     @GetMapping("/byCompanyId")
     public List<CouponData> getCouponsByCustomerId(@RequestParam("companyId") long companyId, @RequestParam("pageNumber") int pageNumber) throws ServerException {
         return couponsLogic.getCouponsByCompanyID(companyId, pageNumber);
     }
 
+    //http://localhost:8080/coupon/byCategoryId?categoryId=1&pageNumber=1
     @GetMapping("/byCategoryId")
     public List<CouponData> getCouponsByCategoryId(@RequestParam("categoryId") long categoryId, @RequestParam("pageNumber") int pageNumber) throws ServerException {
         return couponsLogic.getCouponsByCategoryID(categoryId, pageNumber);
