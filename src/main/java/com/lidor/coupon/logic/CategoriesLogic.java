@@ -4,10 +4,13 @@ import com.lidor.coupon.dal.ICategoryDal;
 import com.lidor.coupon.dto.CategoryDto;
 import com.lidor.coupon.entities.Category;
 import com.lidor.coupon.enums.ErrorType;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.AuthorizationUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestHeader;
 
 import java.util.List;
 
@@ -21,7 +24,8 @@ public class CategoriesLogic {
         this.categoriesDal = categoriesDal;
     }
 
-    public void createCategory(Category category) throws ServerException {
+    public void createCategory( String authorization, Category category) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
         categoryValidation(category);
         categoryNameExist(category);
         try {
@@ -31,7 +35,8 @@ public class CategoriesLogic {
         }
     }
 
-    public void updateCategory(Category category) throws ServerException {
+    public void updateCategory( String authorization, Category category) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
         categoryExist(category.getId());
         categoryValidation(category);
         try {
@@ -41,7 +46,9 @@ public class CategoriesLogic {
         }
     }
 
-    public void removeCategory(long categoryId) throws ServerException {
+    public void removeCategory( String authorization, long categoryId) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
+
         categoryExist(categoryId);
         try {
             categoriesDal.deleteById(categoryId);

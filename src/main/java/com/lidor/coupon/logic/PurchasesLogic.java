@@ -7,9 +7,12 @@ import com.lidor.coupon.dto.PurchaseData;
 import com.lidor.coupon.entities.Customer;
 import com.lidor.coupon.entities.Purchase;
 import com.lidor.coupon.enums.ErrorType;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.AuthorizationUtils;
 import com.lidor.coupon.util.JWTUtils;
 import com.lidor.coupon.util.ValidatorUtils;
+import io.jsonwebtoken.Claims;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -77,7 +80,8 @@ public class PurchasesLogic {
         }
     }
 
-    public List<PurchaseData> getPurchases(int pageNumber) throws ServerException {
+    public List<PurchaseData> getPurchases(String authorization, int pageNumber) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
             List<PurchaseData> purchases= purchasesDal.findPurchases(pageable);
@@ -87,19 +91,20 @@ public class PurchasesLogic {
         }
     }
 
-    public List<PurchaseData> getAllPurchasesByCouponId(long couponId, int pageNumber) throws ServerException {
-        couponValid(couponId);
+    public List<PurchaseData> getAllPurchasesByCompanyId(String authorization, int pageNumber) throws ServerException {
+        Claims claims = JWTUtils.decodeJWT(authorization);
+        long companyId = Long.parseLong(claims.getAudience());
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<PurchaseData> couponPurchases= purchasesDal.findAllByCouponId(couponId, pageable);
-            return couponPurchases;
+            List<PurchaseData> companyPurchases= purchasesDal.findAllByCompanyId(companyId, pageable);
+            return companyPurchases;
         } catch (Exception e) {
-            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by coupon id" +couponId);
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by company id" +companyId);
         }
     }
 
-    public List<PurchaseData> getAllPurchasesByCustomerId(long customerId, int pageNumber) throws ServerException {
-        userValid(customerId);
+    public List<PurchaseData> getAllPurchasesByCustomerId(String authorization, int pageNumber) throws ServerException {
+        long customerId = JWTUtils.validateToken(authorization);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
             List<PurchaseData> userPurchases= purchasesDal.findAllByCustomerId(customerId, pageable);

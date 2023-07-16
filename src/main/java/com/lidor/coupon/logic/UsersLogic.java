@@ -8,7 +8,9 @@ import com.lidor.coupon.dto.UserData;
 import com.lidor.coupon.dto.UserLoginData;
 import com.lidor.coupon.entities.User;
 import com.lidor.coupon.enums.ErrorType;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.AuthorizationUtils;
 import com.lidor.coupon.util.HashUtils;
 import com.lidor.coupon.util.JWTUtils;
 import com.lidor.coupon.util.ValidatorUtils;
@@ -17,6 +19,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,11 +59,16 @@ public class UsersLogic {
 
     public UserData getUser(long userId) throws ServerException {
         validUserExistById(userId);
+        String companyName = null;
         try {
-            UserData user = usersDal.findUser(userId);
-            return user;
+            User user = usersDal.findById(userId).get();
+            if (user.getCompany() != null) {
+                companyName = user.getCompany().getName();
+            }
+            UserData userData = new UserData(user.getId(), user.getUserName(), user.getUserType(), companyName);
+            return userData;
         } catch (Exception e) {
-            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create user" + userId);
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get user" + userId);
         }
     }
 
@@ -89,6 +97,18 @@ public class UsersLogic {
         try {
             List<UserData> companyUsers = usersDal.findAllByCompany(companyId, pageable);
             return companyUsers;
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all company users");
+        }
+    }
+
+    public List<UserData> findAllByUserType(String authorization, int pageNumber, UserType userType ) throws ServerException{
+        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
+        Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
+        try {
+            List<User> users = usersDal.findAllByUserType(pageable, userType);
+            List<UserData> usersData =convertToUserDtoList(users);
+            return usersData;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all company users");
         }
@@ -139,6 +159,26 @@ public class UsersLogic {
         if (user.getCompany() != null && user.getCompany().getId() != null) {
             companyValid(user);
         }
+    }
+
+    private List<UserData> convertToUserDtoList(List<User> coupons) {
+        List<UserData> userData = new ArrayList<>();
+        for (User user: coupons) {
+            UserData userDto = convertTypeOfUserToUserDto(user);
+            userData.add(userDto);
+        }
+        return userData;
+    }
+    private UserData convertTypeOfUserToUserDto(User user) {
+        long id = user.getId();
+        String userName = user.getUserName();
+        UserType userType = user.getUserType();
+        String companyName = null;
+        if(user.getCompany() != null){
+            companyName = user.getCompany().getName();
+        }
+        UserData userDto = new UserData(id,userName ,userType , companyName);
+        return userDto;
     }
 
     private void companyValid(User user) throws ServerException {

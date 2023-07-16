@@ -1,7 +1,5 @@
 package com.lidor.coupon.dto;
 
-import javax.persistence.Column;
-
 public class CustomerData {
     private Long id;
     private String userName;

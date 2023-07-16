@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.lidor.coupon.dto.UserData;
 import com.lidor.coupon.dto.UserLoginData;
 import com.lidor.coupon.entities.User;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
 import com.lidor.coupon.logic.UsersLogic;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -55,6 +56,10 @@ public class UserController {
     @GetMapping({"/byCompanyId"})
     public Iterable<UserData> getAllUsersByCompanyId(@RequestParam("companyId") long companyId, @RequestParam("page") int pageNumber) throws ServerException {
         return usersLogic.getAllCompanyUsers(companyId,pageNumber);
+    }
+    @GetMapping({"/byUserType"})
+    public Iterable<UserData> findAllByUserType(@RequestHeader String authorization, @RequestParam("page") int pageNumber, UserType userType) throws ServerException {
+        return usersLogic.findAllByUserType(authorization,pageNumber,userType);
     }
 
  }

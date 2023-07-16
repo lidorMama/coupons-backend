@@ -21,13 +21,13 @@ public class CategoryController {
     }
 
     @PostMapping
-    public void createCategory(@RequestBody Category category) throws ServerException {
-        categoriesLogic.createCategory(category);
+    public void createCategory(@RequestHeader String authorization, @RequestBody Category category) throws ServerException {
+        categoriesLogic.createCategory(authorization, category);
     }
 
     @PutMapping
-    public void updateCategory(@RequestBody Category category) throws ServerException {
-        categoriesLogic.updateCategory(category);
+    public void updateCategory(@RequestHeader String authorization, @RequestBody Category category) throws ServerException {
+        categoriesLogic.updateCategory(authorization, category);
     }
 
     @GetMapping("{categoryId}")
@@ -36,8 +36,8 @@ public class CategoryController {
     }
 
     @DeleteMapping("{categoryId}")
-    public void deleteCategory(@PathVariable("categoryId") long categoryId) throws ServerException {
-        categoriesLogic.removeCategory(categoryId);
+    public void deleteCategory(@RequestHeader String authorization, @PathVariable("categoryId") long categoryId) throws ServerException {
+        categoriesLogic.removeCategory(authorization, categoryId);
     }
 
     @GetMapping

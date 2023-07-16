@@ -8,6 +8,15 @@ public class UserData {
     private UserType userType;
     private String companyName;
 
+    public UserData() {
+    }
+
+    public UserData(Long id, String userName, UserType userType) {
+        this.id = id;
+        this.userName = userName;
+        this.userType = userType;
+    }
+
     public UserData(Long id, String userName, UserType userType, String companyName) {
         this.id = id;
         this.userName = userName;

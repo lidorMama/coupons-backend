@@ -38,7 +38,8 @@ public enum ErrorType {
     INVALID_NUMBER(634,"Please enter a valid number", false),
     INVALID_ADDRESS(635,"Please enter a valid address", false),
     COUPON_OUT_OF_STOCK(636,"coupon out of stock", false),
-    INVALID_PURCHASE(637,"Invalid purchase", false);
+    INVALID_PURCHASE(637,"Invalid purchase", false),
+    PERMISSION_DENIED(638,"Permission Denied", false);
 
     private int errorNumber;
     private String errorMessage;

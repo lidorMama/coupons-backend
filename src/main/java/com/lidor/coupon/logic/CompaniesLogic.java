@@ -8,8 +8,6 @@ import com.lidor.coupon.enums.ErrorType;
 import com.lidor.coupon.exceptions.ServerException;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

@@ -22,7 +22,7 @@ public class PurchaseController {
     }
 
     @PostMapping
-    public void createPurchase(@RequestHeader String authorization,@RequestBody Purchase purchase) throws ServerException {
+    public void createPurchase(@RequestHeader String authorization, @RequestBody Purchase purchase) throws ServerException {
         purchaseLogic.buyCoupon(authorization, purchase);
     }
 
@@ -42,18 +42,18 @@ public class PurchaseController {
     }
 
     @GetMapping("/byCustomerId")
-    public List<PurchaseData> getPurchasesByCustomerId(@RequestParam("customerId") long customerId, @RequestParam("pageNumber") int pageNumber) throws ServerException {
-        return purchaseLogic.getAllPurchasesByCustomerId(customerId, pageNumber);
+    public List<PurchaseData> getPurchasesByCustomerId(@RequestHeader String authorization, @RequestParam("pageNumber") int pageNumber) throws ServerException {
+        return purchaseLogic.getAllPurchasesByCustomerId(authorization, pageNumber);
     }
 
     @GetMapping
-    public List<PurchaseData> getPurchases(@RequestParam("pageNumber") int pageNumber) throws ServerException {
-        return purchaseLogic.getPurchases(pageNumber);
+    public List<PurchaseData> getPurchases(@RequestHeader String authorization, @RequestParam("pageNumber") int pageNumber) throws ServerException {
+        return purchaseLogic.getPurchases(authorization, pageNumber);
     }
 
-    @GetMapping("/byCouponId")
-    public List<PurchaseData> getPurchasesByCouponIdId(@RequestParam("couponId") long couponId, @RequestParam("pageNumber") int pageNumber) throws ServerException {
-        return purchaseLogic.getAllPurchasesByCouponId(couponId, pageNumber);
+    @GetMapping("/byCompanyId")
+    public List<PurchaseData> getPurchasesByCompanyId(@RequestHeader String authorization, @RequestParam("pageNumber") int pageNumber) throws ServerException {
+        return purchaseLogic.getAllPurchasesByCompanyId(authorization, pageNumber);
     }
 }
 

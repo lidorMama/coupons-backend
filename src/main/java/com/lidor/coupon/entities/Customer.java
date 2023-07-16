@@ -6,14 +6,13 @@ import java.util.List;
 @Entity
 @Table(name = "Customer")
 public class Customer {
+    @Id
+    @Column(name = "id" , nullable = false)
+    private long id;
 
     @OneToOne(cascade = CascadeType.ALL)
     @MapsId
     private User user;
-
-    @Id
-    @Column(name = "Id", nullable = false)
-    private Long id;
 
     @Column(name = "ADDRESS", nullable = true)
     private String address;
@@ -36,6 +35,23 @@ public class Customer {
     public Customer() {
     }
 
+    public Customer(User user, String address, String firstName, String lastName, String amountOfKids, String phoneNumber) {
+        this.user = user;
+        this.address = address;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.amountOfKids = amountOfKids;
+        this.phoneNumber = phoneNumber;
+    }
+
+    public long getId() {
+        return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
+    }
+
     public User getUser() {
         return user;
     }
@@ -44,12 +60,12 @@ public class Customer {
         this.user = user;
     }
 
-    public Long getId() {
-        return id;
+    public String getAddress() {
+        return address;
     }
 
-    public void setId(Long id) {
-        this.id = id;
+    public void setAddress(String address) {
+        this.address = address;
     }
 
     public String getFirstName() {
@@ -68,22 +84,6 @@ public class Customer {
         this.lastName = lastName;
     }
 
-    public List<Purchase> getPurchases() {
-        return purchases;
-    }
-
-    public void setPurchases(List<Purchase> purchases) {
-        this.purchases = purchases;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public void setAddress(String address) {
-        this.address = address;
-    }
-
     public String getAmountOfKids() {
         return amountOfKids;
     }
@@ -100,6 +100,13 @@ public class Customer {
         this.phoneNumber = phoneNumber;
     }
 
+    public List<Purchase> getPurchases() {
+        return purchases;
+    }
+
+    public void setPurchases(List<Purchase> purchases) {
+        this.purchases = purchases;
+    }
 
     @Override
     public String toString() {

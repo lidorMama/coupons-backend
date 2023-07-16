@@ -15,8 +15,8 @@ public interface IPurchaseDal extends CrudRepository<Purchase, Long> {
     @Query("SELECT NEW com.lidor.coupon.dto.PurchaseData(pr.id, pr.amount, pr.timestamp, pr.customer.firstName, pr.customer.lastName, pr.coupon.name, pr.coupon.price, pr.coupon.description ) FROM Purchase pr Join Customer cs ON pr.customer.id = cs.id JOIN Coupon cp ON pr.coupon.id= cp.id")
     List<PurchaseData> findPurchases(Pageable pageable);
 
-    @Query("SELECT NEW com.lidor.coupon.dto.PurchaseData(pr.id, pr.amount, pr.timestamp, pr.customer.firstName, pr.customer.lastName, pr.coupon.name, pr.coupon.price, pr.coupon.description ) FROM Purchase pr Join Customer cs ON pr.customer.id = cs.id JOIN Coupon cp ON pr.coupon.id= cp.id WHERE pr.coupon.id= :couponId")
-    List<PurchaseData> findAllByCouponId(@Param("couponId") long couponId, Pageable pageable);
+    @Query("SELECT NEW com.lidor.coupon.dto.PurchaseData(pr.id, pr.amount, pr.timestamp, pr.customer.firstName, pr.customer.lastName, pr.coupon.name, pr.coupon.price, pr.coupon.description ) FROM Purchase pr Join Customer cs ON pr.customer.id = cs.id JOIN Coupon cp ON pr.coupon.id= cp.id WHERE pr.coupon.company.id= :companyId")
+    List<PurchaseData> findAllByCompanyId(@Param("companyId") long companyId, Pageable pageable);
 
     @Query("SELECT NEW com.lidor.coupon.dto.PurchaseData(pr.id, pr.amount, pr.timestamp, pr.customer.firstName, pr.customer.lastName, pr.coupon.name, pr.coupon.price, pr.coupon.description ) FROM Purchase pr Join Customer cs ON pr.customer.id = cs.id JOIN Coupon cp ON pr.coupon.id= cp.id WHERE pr.customer.id= :customerId")
     List<PurchaseData> findAllByCustomerId(@Param("customerId") long customerId, Pageable pageable);
