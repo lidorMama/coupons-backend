@@ -22,24 +22,24 @@ public class CustomerController {
     }
 
     @PostMapping
-    public void createCustomer(@RequestBody Customer customer) throws ServerException {
+    public void createCustomer(@RequestHeader String authorization, @RequestBody Customer customer) throws ServerException {
         customer.getUser().setUserType(UserType.Customer);
-        customersLogic.addCustomer(customer);
+        customersLogic.addCustomer(authorization,customer);
     }
 
     @PutMapping
-    public void updateCustomer(@RequestBody Customer customer) throws ServerException {
-        customersLogic.updateCustomer(customer);
+    public void updateCustomer(@RequestHeader String authorization,@RequestBody Customer customer) throws ServerException {
+        customersLogic.updateCustomer(authorization,customer);
     }
 
     @DeleteMapping("{customerId}")
-    public void removeCustomer(@PathVariable("customerId") long customerId) throws ServerException {
-        customersLogic.removeCustomer(customerId);
+    public void removeCustomer(@RequestHeader String authorization,@PathVariable("customerId") long customerId) throws ServerException {
+        customersLogic.removeCustomer(authorization,customerId);
     }
 
     @GetMapping("{customerId}")
-    public CustomerData getCustomer(@PathVariable("customerId") int customerId) throws ServerException {
-        return customersLogic.getCustomer(customerId);
+    public CustomerData getCustomer(@RequestHeader String authorization) throws ServerException {
+        return customersLogic.getCustomer(authorization);
     }
 
     @GetMapping

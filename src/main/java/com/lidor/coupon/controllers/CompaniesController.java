@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
 @RestController
 @RequestMapping("/company")
 public class CompaniesController {
@@ -19,13 +20,13 @@ public class CompaniesController {
     }
 
     @PostMapping
-    public void createCompany(@RequestBody Company company) throws ServerException {
-         companiesLogic.createCompany(company);
+    public void createCompany(@RequestHeader String authorization, @RequestBody Company company) throws ServerException {
+        companiesLogic.createCompany(authorization, company);
     }
 
     @PutMapping
-    public void updateCompany(@RequestBody Company company) throws ServerException {
-        companiesLogic.updateCompany(company);
+    public void updateCompany(@RequestHeader String authorization, @RequestBody Company company) throws ServerException {
+        companiesLogic.updateCompany(authorization, company);
     }
 
     @GetMapping("{companyId}")
@@ -34,8 +35,8 @@ public class CompaniesController {
     }
 
     @DeleteMapping("{companyId}")
-    public void deleteCompany(@PathVariable("companyId") long id) throws ServerException {
-        companiesLogic.removeCompany(id);
+    public void deleteCompany(@RequestHeader String authorization, @PathVariable("companyId") long id) throws ServerException {
+        companiesLogic.removeCompany(authorization, id);
     }
 
     @GetMapping()

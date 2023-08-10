@@ -34,23 +34,23 @@ public class UserController {
     }
 
     @PutMapping
-    public void updateUser(@RequestBody User userEntity) throws ServerException {
-        usersLogic.updateUser(userEntity);
+    public void updateUser(@RequestHeader String authorization,@RequestBody User userEntity) throws ServerException {
+        usersLogic.updateUser(authorization,userEntity);
     }
 
     @GetMapping("{userId}")
-    public UserData getUser(@PathVariable("userId") long userId) throws ServerException {
-        return usersLogic.getUser(userId);
+    public UserData getUser(@RequestHeader String authorization) throws ServerException {
+        return usersLogic.getUser(authorization);
     }
 
     @DeleteMapping("{userId}")
-    public void deleteUser(@PathVariable("userId") long id) throws ServerException {
-        usersLogic.removeUser(id);
+    public void deleteUser(@RequestHeader String authorization, @PathVariable("userId") long id) throws ServerException {
+        usersLogic.removeUser(authorization,id);
     }
 
     @GetMapping({"/byPage"})
-    public List<UserData> getAllUsers(@RequestParam("page") int pageNumber) throws ServerException {
-        return usersLogic.getAllUsers(pageNumber);
+    public List<UserData> getAllUsers(@RequestHeader String authorization, @RequestParam("page") int pageNumber) throws ServerException {
+        return usersLogic.getAllUsers(authorization,pageNumber);
     }
 
     @GetMapping({"/byCompanyId"})
@@ -58,7 +58,7 @@ public class UserController {
         return usersLogic.getAllCompanyUsers(companyId,pageNumber);
     }
     @GetMapping({"/byUserType"})
-    public Iterable<UserData> findAllByUserType(@RequestHeader String authorization, @RequestParam("page") int pageNumber, UserType userType) throws ServerException {
+    public Iterable<UserData> findAllByUserType(@RequestHeader String authorization, @RequestParam("page") int pageNumber,@RequestParam ("userType") UserType userType) throws ServerException {
         return usersLogic.findAllByUserType(authorization,pageNumber,userType);
     }
 

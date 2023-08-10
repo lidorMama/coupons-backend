@@ -5,8 +5,11 @@ import com.lidor.coupon.dal.ICustomerDal;
 import com.lidor.coupon.dto.CustomerData;
 import com.lidor.coupon.entities.Customer;
 import com.lidor.coupon.enums.ErrorType;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.AuthorizationUtils;
 import com.lidor.coupon.util.HashUtils;
+import com.lidor.coupon.util.JWTUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -26,7 +29,7 @@ public class CustomersLogic {
         this.customersDal = customersDal;
     }
 
-    public void addCustomer(Customer customer) throws ServerException {
+    public void addCustomer(String authorization, Customer customer) throws ServerException {
         validateCustomer(customer);
         usersLogic.userValidation(customer.getUser());
         usersLogic.userExistByName(customer.getUser().getUserName());
@@ -39,8 +42,8 @@ public class CustomersLogic {
         }
     }
 
-    public CustomerData getCustomer(long customerId) throws ServerException {
-        customerExistById(customerId);
+    public CustomerData getCustomer(String authorization) throws ServerException {
+        long customerId = JWTUtils.validateToken(authorization);
         try {
             CustomerData customer = customersDal.getCustomer(customerId);
             return customer;
@@ -49,7 +52,8 @@ public class CustomersLogic {
         }
     }
 
-    public void removeCustomer(long customerId) throws ServerException {
+    public void removeCustomer(String authorization, long customerId) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         customerExistById(customerId);
         try {
             customersDal.deleteById(customerId);
@@ -58,8 +62,9 @@ public class CustomersLogic {
         }
     }
 
-    public void updateCustomer(Customer customer) throws ServerException {
-        validateCustomer(customer);
+    public void updateCustomer(String authorization, Customer customer) throws ServerException {
+        long customerId = JWTUtils.validateToken(authorization);
+        customer.setId(customerId);
         try {
             customersDal.save(customer);
         } catch (Exception e) {
@@ -70,7 +75,7 @@ public class CustomersLogic {
     public List<CustomerData> getCustomers(int pageNumber) throws ServerException {
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<CustomerData> customers= customersDal.findAll(pageable);
+            List<CustomerData> customers = customersDal.findAll(pageable);
             return customers;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get customers");

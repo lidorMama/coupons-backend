@@ -21,18 +21,18 @@ public class CouponController {
     }
 
     @PostMapping
-    public void createCoupon(@RequestBody Coupon coupon) throws ServerException {
-        couponsLogic.createCoupon(coupon);
+    public void createCoupon(@RequestHeader String authorization, @RequestBody Coupon coupon) throws ServerException {
+        couponsLogic.createCoupon(authorization, coupon);
     }
 
     @PutMapping
-    public void updateCoupon(@RequestBody Coupon coupon) throws ServerException {
-        couponsLogic.updateCoupon(coupon);
+    public void updateCoupon(@RequestHeader String authorization, @RequestBody Coupon coupon) throws ServerException {
+        couponsLogic.updateCoupon(authorization, coupon);
     }
 
     @DeleteMapping("{couponId}")
-    public void removeCoupon(@PathVariable("couponId") long couponId) throws ServerException {
-        couponsLogic.removeCoupon(couponId);
+    public void removeCoupon(@RequestHeader String authorization, @PathVariable("couponId") long couponId) throws ServerException {
+        couponsLogic.removeCoupon(authorization, couponId);
     }
 
     @GetMapping("{couponId}")
@@ -53,8 +53,8 @@ public class CouponController {
     }
 
     @GetMapping("/byPriceRange")
-    public List<CouponData> getCouponsByPriceRange(@RequestParam("minPrice") int minPrice,@RequestParam("maxPrice") int maxPrice, @RequestParam("pageNumber") int pageNumber) throws ServerException {
-        return couponsLogic.getAllCouponsByPriceRange(minPrice,maxPrice, pageNumber);
+    public List<CouponData> getCouponsByPriceRange(@RequestParam("minPrice") int minPrice, @RequestParam("maxPrice") int maxPrice, @RequestParam("pageNumber") int pageNumber) throws ServerException {
+        return couponsLogic.getAllCouponsByPriceRange(minPrice, maxPrice, pageNumber);
     }
 
     @GetMapping

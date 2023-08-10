@@ -5,7 +5,9 @@ import com.lidor.coupon.dal.ICouponDal;
 import com.lidor.coupon.dto.CouponData;
 import com.lidor.coupon.entities.Coupon;
 import com.lidor.coupon.enums.ErrorType;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.AuthorizationUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -32,7 +34,8 @@ public class CouponsLogic {
         this.categoriesLogic = categoriesLogic;
     }
 
-    public void createCoupon(Coupon coupon) throws ServerException {
+    public void createCoupon(String authorization, Coupon coupon) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Company);
         couponValidation(coupon);
         couponExistByName(coupon.getName());
         try {
@@ -42,7 +45,8 @@ public class CouponsLogic {
         }
     }
 
-    public void updateCoupon(Coupon coupon) throws ServerException {
+    public void updateCoupon(String authorization, Coupon coupon) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Company);
         couponValidation(coupon);
         try {
             couponsDal.save(coupon);
@@ -51,7 +55,8 @@ public class CouponsLogic {
         }
     }
 
-    public void removeCoupon(long couponId) throws ServerException {
+    public void removeCoupon(String authorization, long couponId) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Company);
         couponExistById(couponId);
         try {
             couponsDal.deleteById(couponId);
@@ -63,7 +68,7 @@ public class CouponsLogic {
     public CouponData getCoupon(long couponId) throws ServerException {
         couponExistById(couponId);
         try {
-            CouponData coupon= couponsDal.getCoupon(couponId);
+            CouponData coupon = couponsDal.getCoupon(couponId);
             return coupon;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupon " + couponId);
@@ -74,7 +79,7 @@ public class CouponsLogic {
     public List<CouponData> getCoupons(int pageNumber) throws ServerException {
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<CouponData> coupons= couponsDal.findAll(pageable);
+            List<CouponData> coupons = couponsDal.findAll(pageable);
             return coupons;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all coupons");
@@ -86,7 +91,7 @@ public class CouponsLogic {
         companyValid(companyId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<CouponData> companyCoupons= couponsDal.findAllByCompanyId(companyId, pageable);
+            List<CouponData> companyCoupons = couponsDal.findAllByCompanyId(companyId, pageable);
             return companyCoupons;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupons by company id" + companyId);
@@ -97,7 +102,7 @@ public class CouponsLogic {
         categoryValid(categoryId);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<CouponData> categoryCoupons= couponsDal.findAllByCategoryId(categoryId, pageable);
+            List<CouponData> categoryCoupons = couponsDal.findAllByCategoryId(categoryId, pageable);
             return categoryCoupons;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupons by category id" + categoryId);
@@ -110,7 +115,7 @@ public class CouponsLogic {
             throw new ServerException(ErrorType.INVALID_NUMBER, "," + maxPrice + "," + minPrice);
         }
         try {
-            List<CouponData> couponsByPrice= couponsDal.findAlByPriceRange(minPrice, maxPrice, pageable);
+            List<CouponData> couponsByPrice = couponsDal.findAlByPriceRange(minPrice, maxPrice, pageable);
             return couponsByPrice;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get coupons by price range");

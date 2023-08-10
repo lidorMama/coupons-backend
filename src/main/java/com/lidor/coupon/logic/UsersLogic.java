@@ -47,7 +47,9 @@ public class UsersLogic {
         }
     }
 
-    public void updateUser(User user) throws ServerException {
+    public void updateUser(String authorization, User user) throws ServerException {
+        long userId = JWTUtils.validateToken(authorization);
+        user.setId(userId);
         validUserExistById(user.getId());
         userValidation(user);
         try {
@@ -57,7 +59,8 @@ public class UsersLogic {
         }
     }
 
-    public UserData getUser(long userId) throws ServerException {
+    public UserData getUser(String authorization) throws ServerException {
+        long userId = JWTUtils.validateToken(authorization);
         validUserExistById(userId);
         String companyName = null;
         try {
@@ -72,7 +75,8 @@ public class UsersLogic {
         }
     }
 
-    public void removeUser(long userId) throws ServerException {
+    public void removeUser(String authorization, long userId) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         validUserExistById(userId);
         try {
             usersDal.deleteById(userId);
@@ -81,7 +85,8 @@ public class UsersLogic {
         }
     }
 
-    public List<UserData> getAllUsers(int pageNumber) throws ServerException {
+    public List<UserData> getAllUsers(String authorization, int pageNumber) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
             List<UserData> users = usersDal.findAll(pageable);
@@ -102,12 +107,12 @@ public class UsersLogic {
         }
     }
 
-    public List<UserData> findAllByUserType(String authorization, int pageNumber, UserType userType ) throws ServerException{
-        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
+    public List<UserData> findAllByUserType(String authorization, int pageNumber, UserType userType) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
             List<User> users = usersDal.findAllByUserType(pageable, userType);
-            List<UserData> usersData =convertToUserDtoList(users);
+            List<UserData> usersData = convertToUserDtoList(users);
             return usersData;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all company users");
@@ -115,8 +120,8 @@ public class UsersLogic {
     }
 
     public String login(UserLoginData userLoginData) throws ServerException, JsonProcessingException {
-//        String hexString = HashUtils.computeSHA256Hash(userLoginData.getPassword());
-//        userLoginData.setPassword(hexString);
+        String hexString = HashUtils.computeSHA256Hash(userLoginData.getPassword());
+        userLoginData.setPassword(hexString);
         SuccessfulLoginData user = usersDal.login(userLoginData.getUserName(), userLoginData.getPassword());
         if (user == null) {
             throw new ServerException(ErrorType.LOGIN_FAILURE, "The user name and password are not matched, Username: " + userLoginData.getUserName() + " ,Password: " + userLoginData.getPassword());
@@ -163,21 +168,22 @@ public class UsersLogic {
 
     private List<UserData> convertToUserDtoList(List<User> coupons) {
         List<UserData> userData = new ArrayList<>();
-        for (User user: coupons) {
+        for (User user : coupons) {
             UserData userDto = convertTypeOfUserToUserDto(user);
             userData.add(userDto);
         }
         return userData;
     }
+
     private UserData convertTypeOfUserToUserDto(User user) {
         long id = user.getId();
         String userName = user.getUserName();
         UserType userType = user.getUserType();
         String companyName = null;
-        if(user.getCompany() != null){
+        if (user.getCompany() != null) {
             companyName = user.getCompany().getName();
         }
-        UserData userDto = new UserData(id,userName ,userType , companyName);
+        UserData userDto = new UserData(id, userName, userType, companyName);
         return userDto;
     }
 

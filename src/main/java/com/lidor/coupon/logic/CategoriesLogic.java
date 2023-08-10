@@ -24,8 +24,8 @@ public class CategoriesLogic {
         this.categoriesDal = categoriesDal;
     }
 
-    public void createCategory( String authorization, Category category) throws ServerException {
-        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
+    public void createCategory(String authorization, Category category) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         categoryValidation(category);
         categoryNameExist(category);
         try {
@@ -35,8 +35,8 @@ public class CategoriesLogic {
         }
     }
 
-    public void updateCategory( String authorization, Category category) throws ServerException {
-        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
+    public void updateCategory(String authorization, Category category) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         categoryExist(category.getId());
         categoryValidation(category);
         try {
@@ -46,8 +46,8 @@ public class CategoriesLogic {
         }
     }
 
-    public void removeCategory( String authorization, long categoryId) throws ServerException {
-        AuthorizationUtils.validatePermission(authorization,UserType.Admin);
+    public void removeCategory(String authorization, long categoryId) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
 
         categoryExist(categoryId);
         try {
@@ -59,7 +59,7 @@ public class CategoriesLogic {
 
     public List<CategoryDto> getAllCategories() throws ServerException {
         try {
-            List<CategoryDto> categories =categoriesDal.findAllCategories();
+            List<CategoryDto> categories = categoriesDal.findAllCategories();
             return categories;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get all categories");

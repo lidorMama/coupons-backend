@@ -27,7 +27,7 @@ public class PurchasesLogic {
     private UsersLogic usersLogic;
     private CategoriesLogic categoriesLogic;
     private CouponsLogic couponsLogic;
-    private  CustomersLogic customersLogic;
+    private CustomersLogic customersLogic;
 
     @Autowired
     public PurchasesLogic(IPurchaseDal purchasesDal, UsersLogic usersLogic, CategoriesLogic categoriesLogic, CouponsLogic couponsLogic) {
@@ -84,7 +84,7 @@ public class PurchasesLogic {
         AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<PurchaseData> purchases= purchasesDal.findPurchases(pageable);
+            List<PurchaseData> purchases = purchasesDal.findPurchases(pageable);
             return purchases;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases");
@@ -96,10 +96,10 @@ public class PurchasesLogic {
         long companyId = Long.parseLong(claims.getAudience());
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<PurchaseData> companyPurchases= purchasesDal.findAllByCompanyId(companyId, pageable);
+            List<PurchaseData> companyPurchases = purchasesDal.findAllByCompanyId(companyId, pageable);
             return companyPurchases;
         } catch (Exception e) {
-            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by company id" +companyId);
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by company id" + companyId);
         }
     }
 
@@ -107,10 +107,10 @@ public class PurchasesLogic {
         long customerId = JWTUtils.validateToken(authorization);
         Pageable pageable = PageRequest.of(pageNumber - 1, Constants.AMOUNT_OF_ITEMS_IN_PAGE);
         try {
-            List<PurchaseData> userPurchases= purchasesDal.findAllByCustomerId(customerId, pageable);
+            List<PurchaseData> userPurchases = purchasesDal.findAllByCustomerId(customerId, pageable);
             return userPurchases;
         } catch (Exception e) {
-            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by customer id"+ customerId);
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to get purchases by customer id" + customerId);
         }
     }
 

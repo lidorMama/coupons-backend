@@ -5,7 +5,9 @@ import com.lidor.coupon.dal.ICompanyDal;
 import com.lidor.coupon.dto.CompanyData;
 import com.lidor.coupon.entities.Company;
 import com.lidor.coupon.enums.ErrorType;
+import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
+import com.lidor.coupon.util.AuthorizationUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -21,7 +23,8 @@ public class CompaniesLogic {
         this.companiesDal = companiesDal;
     }
 
-    public void createCompany(Company company) throws ServerException {
+    public void createCompany(String authorization, Company company) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         companyValidation(company);
         companyExistByName(company.getName());
         try {
@@ -29,10 +32,10 @@ public class CompaniesLogic {
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create company " + company.getName());
         }
-
     }
 
-    public void updateCompany(Company company) throws ServerException {
+    public void updateCompany(String authorization, Company company) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
         validCompanyExist(company.getId());
         companyValidation(company);
         try {
@@ -53,7 +56,8 @@ public class CompaniesLogic {
 
     }
 
-    public void removeCompany(long companyId) throws ServerException {
+    public void removeCompany(String authorization, long companyId) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Company);
         validCompanyExist(companyId);
         try {
             companiesDal.deleteById(companyId);
