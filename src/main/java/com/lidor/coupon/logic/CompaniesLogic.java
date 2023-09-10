@@ -45,10 +45,10 @@ public class CompaniesLogic {
         }
     }
 
-    public CompanyData getCompany(long companyId) throws ServerException {
+    public Company getCompany(long companyId) throws ServerException {
         validCompanyExist(companyId);
         try {
-            CompanyData company = companiesDal.getCompany(companyId);
+            Company company = companiesDal.getCompany(companyId);
             return company;
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to create company " + companyId);

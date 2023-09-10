@@ -2,12 +2,15 @@ package com.lidor.coupon.logic;
 
 import com.lidor.coupon.Consts.Constants;
 import com.lidor.coupon.dal.ICouponDal;
+import com.lidor.coupon.dto.CompanyData;
 import com.lidor.coupon.dto.CouponData;
+import com.lidor.coupon.entities.Company;
 import com.lidor.coupon.entities.Coupon;
 import com.lidor.coupon.enums.ErrorType;
 import com.lidor.coupon.enums.UserType;
 import com.lidor.coupon.exceptions.ServerException;
 import com.lidor.coupon.util.AuthorizationUtils;
+import com.lidor.coupon.util.JWTUtils;
 import com.lidor.coupon.util.ValidatorUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.PageRequest;
@@ -41,6 +44,8 @@ public class CouponsLogic {
         couponExistByName(coupon.getName());
         Date todayDate = convertDate();
         coupon.setStartDate(todayDate);
+        Company company = getCompany(authorization);
+        coupon.setCompany(company);
         try {
             couponsDal.save(coupon);
         } catch (Exception e) {
@@ -187,10 +192,16 @@ public class CouponsLogic {
         companiesLogic.validCompanyExist(companyId);
     }
 
-    private Date convertDate() throws ServerException{
+    private Date convertDate() throws ServerException {
         java.util.Date today = Calendar.getInstance().getTime();
         Date sqlDate = new Date(today.getTime());
         return sqlDate;
+    }
+
+    private Company getCompany(String authorization) throws ServerException {
+        int companyId = JWTUtils.getCompanyIdByToken(authorization);
+        Company company = companiesLogic.getCompany(companyId);
+        return company;
     }
 
     public void removeExpiredCoupons(java.util.Date todayDate) {

@@ -18,6 +18,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import java.sql.Date;
+import java.util.Calendar;
 import java.util.List;
 
 @Service
@@ -42,11 +44,13 @@ public class PurchasesLogic {
         couponValid(purchase.getCoupon().getId());
         long customerId = JWTUtils.validateToken(authorization);
         purchase.getCustomer().setId(customerId);
+        Date todayDate = convertDate();
+        purchase.setTimestamp(todayDate);
         long couponId = purchase.getCoupon().getId();
         int amountOfCoupons = purchase.getAmount();
-        couponsLogic.updateCouponAmountAfterPurchase(couponId, amountOfCoupons);
         try {
             purchasesDal.save(purchase);
+            couponsLogic.updateCouponAmountAfterPurchase(couponId, amountOfCoupons);
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to buy coupon" + purchase.toString());
         }
@@ -133,5 +137,11 @@ public class PurchasesLogic {
 
     private void couponValid(long couponId) throws ServerException {
         couponsLogic.couponExistById(couponId);
+    }
+
+    private Date convertDate() throws ServerException {
+        java.util.Date today = Calendar.getInstance().getTime();
+        Date sqlDate = new Date(today.getTime());
+        return sqlDate;
     }
 }

@@ -75,7 +75,11 @@ public class JWTUtils {
         String userType = claims.getIssuer();
         return userType;
     }
-
+    public static Integer getCompanyIdByToken(String token) {
+        Claims claims = decodeJWT(token);
+        String companyId = claims.getAudience();
+       return Integer.parseInt(companyId);
+    }
     public static Integer validateToken(String token) throws ServerException {
         Claims claims = decodeJWT(token);
         return Integer.parseInt(claims.getId());

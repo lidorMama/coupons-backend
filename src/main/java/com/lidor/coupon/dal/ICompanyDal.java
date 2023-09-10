@@ -13,7 +13,7 @@ import java.util.List;
 public interface ICompanyDal extends CrudRepository<Company, Long> {
 
     @Query("SELECT NEW com.lidor.coupon.dto.CompanyData(cm.id, cm.name,cm.address) FROM Company cm WHERE cm.id= :companyId")
-    CompanyData getCompany(@Param("companyId") long companyId);
+    Company getCompany(@Param("companyId") long companyId);
 
     @Query("SELECT NEW com.lidor.coupon.dto.CompanyData(c.id, c.name, c.address) FROM Company c ")
     List<CompanyData> getAllCompanies();
