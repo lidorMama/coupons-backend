@@ -29,13 +29,13 @@ public class UserController {
 
     @PostMapping("/login")
     public String login(@RequestBody UserLoginData userLoginData) throws ServerException, JsonProcessingException {
-       String token =usersLogic.login(userLoginData);
+        String token = usersLogic.login(userLoginData);
         return token;
     }
 
     @PutMapping
-    public void updateUser(@RequestHeader String authorization,@RequestBody User userEntity) throws ServerException {
-        usersLogic.updateUser(authorization,userEntity);
+    public void updateUser(@RequestHeader String authorization, @RequestBody User userEntity) throws ServerException {
+        usersLogic.updateUser(authorization, userEntity);
     }
 
     @GetMapping("{userId}")
@@ -45,21 +45,26 @@ public class UserController {
 
     @DeleteMapping("{userId}")
     public void deleteUser(@RequestHeader String authorization, @PathVariable("userId") long id) throws ServerException {
-        usersLogic.removeUser(authorization,id);
+        usersLogic.removeUser(authorization, id);
     }
 
     @GetMapping({"/byPage"})
     public List<UserData> getAllUsers(@RequestHeader String authorization, @RequestParam("page") int pageNumber) throws ServerException {
-        return usersLogic.getAllUsers(authorization,pageNumber);
+        return usersLogic.getAllUsers(authorization, pageNumber);
     }
 
     @GetMapping({"/byCompanyId"})
     public Iterable<UserData> getAllUsersByCompanyId(@RequestParam("companyId") long companyId, @RequestParam("page") int pageNumber) throws ServerException {
-        return usersLogic.getAllCompanyUsers(companyId,pageNumber);
-    }
-    @GetMapping({"/byUserType"})
-    public Iterable<UserData> findAllByUserType(@RequestHeader String authorization, @RequestParam("page") int pageNumber,@RequestParam ("userType") UserType userType) throws ServerException {
-        return usersLogic.findAllByUserType(authorization,pageNumber,userType);
+        return usersLogic.getAllCompanyUsers(companyId, pageNumber);
     }
 
- }
+    @GetMapping({"/byUserType"})
+    public Iterable<UserData> findAllByUserType(@RequestHeader String authorization, @RequestParam("page") int pageNumber, @RequestParam("userType") UserType userType) throws ServerException {
+        return usersLogic.findAllByUserType(authorization, pageNumber, userType);
+    }
+
+    @PutMapping("/{userId}/updateUsername")
+    public void updateUsername(@RequestHeader String authorization,@PathVariable("userId") long id, @RequestParam String newUsername) throws ServerException {
+        usersLogic.updateUserName(authorization,id, newUsername);
+    }
+}

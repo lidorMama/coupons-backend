@@ -48,14 +48,28 @@ public class UsersLogic {
     }
 
     public void updateUser(String authorization, User user) throws ServerException {
-        long userId = JWTUtils.validateToken(authorization);
-        user.setId(userId);
+        String userType = JWTUtils.getTypeByToken(authorization);
+        if (userType == "Customer") {
+            long userId = JWTUtils.validateToken(authorization);
+            user.setId(userId);
+        } else {
+            AuthorizationUtils.validatePermission(authorization, UserType.Admin);
+        }
         validUserExistById(user.getId());
-        userValidation(user);
+//        userValidation(user);
         try {
             usersDal.save(user);
         } catch (Exception e) {
             throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update user" + user.getUserName());
+        }
+    }
+
+    public void updateUserName(String authorization,long id, String newUserName) throws ServerException {
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
+        try {
+            usersDal.updateUserName(id, newUserName);
+        } catch (Exception e) {
+            throw new ServerException(ErrorType.GENERAL_ERROR, "Failed to update user name" + newUserName);
         }
     }
 

@@ -13,7 +13,7 @@ public class Company {
     @Column(name = "NAME", unique = true, nullable = false)
     private String name;
 
-    @Column(name = "ADDRESS", unique = true, nullable = false)
+    @Column(name = "ADDRESS", nullable = false)
     private String address;
 
     @OneToMany(mappedBy = "company",cascade = CascadeType.REMOVE)

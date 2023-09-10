@@ -27,4 +27,6 @@ public interface IUsersDal extends CrudRepository<User, Long> {
 
     @Query("SELECT NEW com.lidor.coupon.dto.SuccessfulLoginData(us.id, us.userType, us.company.id) FROM User us WHERE us.userName= :userName AND us.password= :password ")
     SuccessfulLoginData login(@Param("userName") String userName,@Param("password") String password);
-}
+
+    @Query("UPDATE User u SET u.userName = :newUserName WHERE u.id = :userId")
+    void updateUserName(@Param("userId") Long userId, @Param("newUserName") String newUserName);}

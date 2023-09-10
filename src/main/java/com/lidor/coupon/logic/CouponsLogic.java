@@ -14,8 +14,9 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
-//import java.sql.Date;
-import java.util.Date;
+import java.sql.Date;
+import java.util.Calendar;
+//import java.util.Date;
 import java.util.List;
 
 @Service
@@ -38,6 +39,8 @@ public class CouponsLogic {
         AuthorizationUtils.validatePermission(authorization, UserType.Company);
         couponValidation(coupon);
         couponExistByName(coupon.getName());
+        Date todayDate = convertDate();
+        coupon.setStartDate(todayDate);
         try {
             couponsDal.save(coupon);
         } catch (Exception e) {
@@ -184,7 +187,15 @@ public class CouponsLogic {
         companiesLogic.validCompanyExist(companyId);
     }
 
-    public void removeExpiredCoupons(Date todayDate) {
+    private Date convertDate() throws ServerException{
+        java.util.Date today = Calendar.getInstance().getTime();
+        Date sqlDate = new Date(today.getTime());
+        return sqlDate;
+    }
+
+    public void removeExpiredCoupons(java.util.Date todayDate) {
         couponsDal.deleteAllExpiredCoupons(todayDate);
     }
+
+
 }

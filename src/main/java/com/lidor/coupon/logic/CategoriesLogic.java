@@ -25,7 +25,7 @@ public class CategoriesLogic {
     }
 
     public void createCategory(String authorization, Category category) throws ServerException {
-        AuthorizationUtils.validatePermission(authorization, UserType.Admin);
+        AuthorizationUtils.validatePermission(authorization, UserType.Admin, UserType.Company);
         categoryValidation(category);
         categoryNameExist(category);
         try {
