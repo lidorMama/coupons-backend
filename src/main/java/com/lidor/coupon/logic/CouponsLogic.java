@@ -44,8 +44,8 @@ public class CouponsLogic {
         couponExistByName(coupon.getName());
         Date todayDate = convertDate();
         coupon.setStartDate(todayDate);
-        Company company = getCompany(authorization);
-        coupon.setCompany(company);
+//        Company company = getCompany(authorization);
+//        coupon.setCompany(company);
         try {
             couponsDal.save(coupon);
         } catch (Exception e) {
@@ -55,6 +55,8 @@ public class CouponsLogic {
 
     public void updateCoupon(String authorization, Coupon coupon) throws ServerException {
         AuthorizationUtils.validatePermission(authorization, UserType.Company);
+        Date todayDate = convertDate();
+        coupon.setStartDate(todayDate);
         couponValidation(coupon);
         try {
             couponsDal.save(coupon);
@@ -177,11 +179,6 @@ public class CouponsLogic {
         if (coupon.getDescription().length() > 45) {
             throw new ServerException(ErrorType.INVALID_DESCRIPTION, coupon.getDescription());
         }
-        if (!coupon.getStartDate().before(coupon.getEndDate())) {
-            throw new ServerException(ErrorType.INVALID_DATE, String.valueOf(coupon.getStartDate()));
-        }
-        categoryValid(coupon.getCategory().getId());
-        companyValid(coupon.getCompany().getId());
     }
 
     private void categoryValid(long categoryId) throws ServerException {

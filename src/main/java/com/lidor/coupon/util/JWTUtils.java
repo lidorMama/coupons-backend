@@ -77,8 +77,7 @@ public class JWTUtils {
     }
     public static Integer getCompanyIdByToken(String token) {
         Claims claims = decodeJWT(token);
-        String companyId = claims.getAudience();
-       return Integer.parseInt(companyId);
+       return Integer.parseInt(claims.getAudience());
     }
     public static Integer validateToken(String token) throws ServerException {
         Claims claims = decodeJWT(token);
